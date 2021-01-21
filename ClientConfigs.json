@@ -1,0 +1,39 @@
+[
+  {
+    "node_config": {
+      "id": "An actually unique identifier 1",
+      "node": "http://192.168.1.68:14265"
+    },
+    "send_options": {
+      "depth": 1,
+      "min_weight_magnitude": 9,
+      "local_pow": true,
+      "threads": 2
+    },
+    "req_input": {
+      "ticker": 5000,
+      "request": {
+        "url": "https://us.market-api.kaiko.io/v2/data/trades.v1/exchanges/bfnx/spot/btc-usd/trades",
+        "header": {
+          "Accept": "application/json",
+          "X-Api-Key": "0729dc53f1dee66c624fc15dccd8e55c"
+        },
+        "body": {}
+      }
+    }
+  },
+
+  {
+    "node_config": {
+      "id": "A second unique identifier",
+      "node": "http://192.168.1.68:14265"
+    },
+    "send_options": {
+      "depth": 1,
+      "min_weight_magnitude": 9,
+      "local_pow": true,
+      "threads": 2
+    },
+      "req_input": null
+  }
+]
