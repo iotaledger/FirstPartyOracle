@@ -1,15 +1,10 @@
-use iota_streams::{
-    core::prelude::{
-        hash_map::{HashMap, IterMut},
-        String
-    }
-};
+use iota_streams::core::prelude::hash_map::{HashMap, IterMut};
 use crate::{client::Client, Result};
+use anyhow::anyhow;
 
 pub struct ClientStore {
     clients: HashMap<Vec<u8>, Client>
 }
-use anyhow::anyhow;
 
 impl ClientStore {
     pub fn init() -> ClientStore {
@@ -23,8 +18,12 @@ impl ClientStore {
     }
 
     pub fn add_client(&mut self, id: Vec<u8>, client: Client) -> Result<()> {
-        self.clients.insert(id, client).ok_or_else(|| anyhow!("Client could not be added"));
-        Ok(())
+        match self.clients.contains_key(&id) {
+            true => Err(anyhow!("Client with id {:?} already exists", id)),
+            false => {
+                self.clients.insert(id, client);
+                Ok(())
+            }
+        }
     }
-
 }

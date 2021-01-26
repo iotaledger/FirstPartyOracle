@@ -20,6 +20,7 @@ pub struct RetrieverConfig {
 pub struct NodeConfig {
     pub id: String,
     pub node: String,
+    pub whitelist: Vec<String>
 }
 
 #[derive(Deserialize)]

@@ -3,11 +3,10 @@ use crate::Result;
 use std::sync::Arc;
 use tokio::sync::{Mutex};
 use core::time::Duration;
-use tokio::time::sleep;
+use std::thread::sleep;
 use crate::store::ClientStore;
 use anyhow::anyhow;
-use crate::config::{ClientConfig, ReqInput};
-use std::time::UNIX_EPOCH;
+use crate::config::ReqInput;
 
 pub struct Job {
     pub client_id: Vec<u8>,
@@ -49,34 +48,31 @@ impl Executor {
     pub fn init(clients: Arc<Mutex<ClientStore>>) -> Arc<Mutex<Executor>> {
         let job_list = JobList { jobs: Vec::<Job>::new() };
         let executor = Arc::new(Mutex::new(Executor { clients, job_list }));
-        Executor::spawn_thread(executor.clone());
+        Executor::spawn_thread(executor.clone()).unwrap();
         executor
     }
 
     fn spawn_thread(executor: Arc<Mutex<Executor>>) -> Result<()>{
         tokio::spawn(async move {
             loop {
-                Executor::get_jobs(executor.clone()).await;
-                Executor::handle_jobs(executor.clone()).await;
-                sleep(Duration::from_millis(100)).await;
+                Executor::get_jobs(executor.clone()).await.unwrap();
+                Executor::handle_jobs(executor.clone()).await.unwrap();
+                sleep(Duration::from_millis(100));
             }
         });
         Ok(())
     }
 
-    pub fn spawn_requester(executor: Arc<Mutex<Executor>>, config: &ClientConfig) -> Result<()> {
-        let id = config.node_config.id.as_bytes().to_vec();
-        let req = config.get_request_input().unwrap();
-        let ticker = req.ticker;
+    pub fn spawn_requester(executor: Arc<Mutex<Executor>>, id: Vec<u8>, req: ReqInput) -> Result<()> {
         tokio::spawn( async move {
             loop {
+                let ticker = req.ticker as u128;
                 let start = std::time::SystemTime::now();
-                Executor::send_request(executor.clone(), ReqInput::from(&req), &id).await;
+                Executor::send_request(executor.clone(), ReqInput::from(&req), &id).await.unwrap();
                 let elapsed = start.elapsed().unwrap().as_millis();
-                if ticker as u128 > elapsed {
-                    let wait = ticker as u128 - start.elapsed().unwrap().as_millis();
-                    //println!("\nWait {}", wait);
-                    sleep(Duration::from_millis(wait as u64)).await
+                if ticker > elapsed {
+                    let wait = ticker - start.elapsed().unwrap().as_millis();
+                    sleep(Duration::from_millis(wait as u64))
                 }
             }
         });
@@ -90,9 +86,7 @@ impl Executor {
 
         let data = req.request.get();
         let resp = &data.unwrap().into_string().unwrap();
-        //println!("\nData: {}", resp);
-        println!("\nGot data from api. No errors...");
-        client.add_message(&MessageContents::new(resp.as_bytes().to_vec(),Vec::new()));
+        client.add_message(&MessageContents::new(Vec::new(), resp.as_bytes().to_vec()))?;
         Ok(())
     }
 
@@ -111,7 +105,7 @@ impl Executor {
                             Some(msg) => {
                                 let job = Job::new(id.clone(), MessageContents::from(&msg));
                                 jobs.push(job);
-                                client.remove_message(&msg);
+                                client.remove_message(&msg)?;
                             },
                             None => break
                         }
@@ -132,16 +126,12 @@ impl Executor {
     async fn handle_jobs(executor: Arc<Mutex<Executor>>) -> Result<()>{
         loop {
             let mut executor = executor.lock().await;
-            let len = executor.job_list.jobs.len();
-            if len > 0 {
-                println!("Jobs in queue: {}", len);
-            }
             let next_job = executor.job_list.get_next_job();
             if let Some(job) = next_job {
                 let mut clients = executor.clients.lock().await;
                 let client = clients.get_client(job.get_client_id())
                     .ok_or_else(|| anyhow!("Error fetching client"));
-                let response = client.unwrap().send_message(job.get_message()).await;
+                client.unwrap().send_message(job.get_message()).await.unwrap();
                 std::mem::drop(clients);
                 executor.job_list.jobs.remove(0);
             } else {

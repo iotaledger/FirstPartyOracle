@@ -31,12 +31,12 @@ impl MessageContents {
 
 #[derive(Deserialize)]
 pub struct SendMessage {
-    pub id: Vec<u8>,
+    pub id: String,
     message: MessageContents,
 }
 
 impl SendMessage {
-    pub fn new(id: Vec<u8>, message: MessageContents) -> SendMessage {
+    pub fn new(id: String, message: MessageContents) -> SendMessage {
         SendMessage { id, message }
     }
 

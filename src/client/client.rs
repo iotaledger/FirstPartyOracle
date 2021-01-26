@@ -1,4 +1,8 @@
-use crate::{message::message::MessageContents, Result};
+use crate::{
+    config::ClientConfig,
+    message::message::MessageContents,
+    Result
+};
 use iota_streams::{
     app_channels::api::tangle::Author,
     app::transport::{
@@ -6,7 +10,7 @@ use iota_streams::{
         tangle::{
             PAYLOAD_BYTES,
             TangleAddress as Address,
-            client::{Client as StreamsClient,}
+            client::{Client as StreamsClient, SendTrytesOptions}
         }
     },
     core::prelude::{Vec, String},
@@ -14,11 +18,12 @@ use iota_streams::{
 };
 
 use std::sync::Arc;
-use tokio::{sync::Mutex, time::Duration};
+use tokio::sync::Mutex;
 use anyhow::anyhow;
-use crate::config::ClientConfig;
-use iota_streams::app::transport::tangle::client::SendTrytesOptions;
 use serde::Deserialize;
+use crate::client::get_salt;
+use std::net::SocketAddr;
+
 
 pub struct Client {
     pub id: Vec<u8>,
@@ -26,9 +31,10 @@ pub struct Client {
     client: Arc<Mutex<Author<StreamsClient>>>,
     send_pool: Vec<MessageContents>,
     last_link: Option<Address>,
+    pub config: ClientConfig
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Copy, Clone)]
 pub struct SendOptions {
     pub depth: u8,
     pub min_weight_magnitude: u8,
@@ -37,17 +43,12 @@ pub struct SendOptions {
 }
 
 impl Client {
-    pub fn new(config: &ClientConfig) -> Result<Client> {
-        let mut seed = String::from("SomeKindaSalt");
+    pub fn new(config: ClientConfig) -> Result<Client> {
+        let mut seed: String = get_salt(32);
         seed.push_str(&config.node_config.id);
 
         let multi_branch = false;
-        let send_trytes_options = SendTrytesOptions {
-            depth: config.send_options.depth,
-            min_weight_magnitude: config.send_options.min_weight_magnitude,
-            local_pow: config.send_options.local_pow,
-            threads: config.send_options.threads
-        };
+        let send_trytes_options = config.send_options.into();
 
         let mut transport = StreamsClient::new_from_url(&config.node_config.node);
         transport.set_send_options(send_trytes_options);
@@ -62,12 +63,22 @@ impl Client {
             client: Arc::new(Mutex::new(client)),
             send_pool,
             last_link: Some(ann_link.clone()),
-            ann_link
+            ann_link,
+            config
         })
     }
 
     pub fn get_ann_link(&self) -> &Address {
         &self.ann_link
+    }
+
+    pub fn is_whitelisted(&self, addr: &str) -> bool {
+        let whitelist = &self.config.node_config.whitelist;
+        println!("{:?}",whitelist);
+        println!("{}",addr);
+        // If whitelist is set to accept from any source ip
+        (whitelist.len() == 1 && whitelist[0] == "*") ||
+        self.config.node_config.whitelist.contains(&addr.to_string())
     }
 
     pub fn get_next_message(&self) -> Option<MessageContents> {
@@ -102,7 +113,7 @@ impl Client {
                     &Bytes(msg.get_masked().clone())
                 )?;
 
-                self.remove_message(msg);
+                self.remove_message(msg)?;
                 if seq.is_none() {
                     self.last_link = Some(new_link);
                 } else {
@@ -114,4 +125,15 @@ impl Client {
         }
     }
 
+}
+
+impl From<SendOptions> for SendTrytesOptions {
+    fn from(options: SendOptions) -> SendTrytesOptions {
+        SendTrytesOptions {
+            depth: options.depth,
+            min_weight_magnitude: options.min_weight_magnitude,
+            local_pow: options.local_pow,
+            threads: options.threads
+        }
+    }
 }

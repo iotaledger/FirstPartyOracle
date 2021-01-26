@@ -5,46 +5,43 @@ use crate::{
     config::{ClientConfig, RetrieverConfig},
     threads::Executor,
     client::{Client, Retriever},
-    message::{MessageContents, RetrievedMessage}
+    message::SendMessage,
 };
 use anyhow::Result;
 use hyper::{Body, Request, Response, StatusCode, header::CONTENT_TYPE, };
-use crate::message::SendMessage;
-use serde::Serialize;
+use std::net::SocketAddr;
 
 
-pub async fn spawn_oracle(client_store: Arc<Mutex<ClientStore>>, config: &ClientConfig, executor: Arc<Mutex<Executor>>) -> Result<String> {
-    println!("Making Client");
-    let client = Client::new(&config).unwrap();
+pub async fn spawn_oracle(client_store: Arc<Mutex<ClientStore>>, config: ClientConfig, executor: Arc<Mutex<Executor>>) -> Result<String> {
+    let id = config.node_config.id.as_bytes().to_vec();
+    let req = config.get_request_input();
+    let has_req = req.is_some();
+
+    let client = Client::new(config)?;
     let addr = client.get_ann_link().clone();
 
-    println!("Storing Client");
-    client_store.lock().await.add_client(config.node_config.id.as_bytes().to_vec(), client);
+    client_store.lock().await.add_client(id.clone(), client)?;
 
-    if config.req_input.is_some() {
-        println!("Spawning a requester");
-        Executor::spawn_requester(executor.clone(), config)?;
+    if has_req {
+        Executor::spawn_requester(executor.clone(), id, req.unwrap())?;
     }
     Ok(addr.to_string())
 }
 
 
-pub async fn attach_message(
+pub async fn get_channel_id(
     req: Request<Body>,
-    client_store: Arc<Mutex<ClientStore>>,
+    client_store: Arc<Mutex<ClientStore>>
 ) -> Result<Response<Body>> {
     let req_data = hyper::body::to_bytes(req.into_body()).await.unwrap();
     let response;
-
-    let req_struct: serde_json::Result<SendMessage> = serde_json::from_slice(&req_data);
-    match req_struct {
-        Ok(msg) => {
+    let id: serde_json::Result<String> = serde_json::from_slice(&req_data);
+    match id {
+        Ok(id) => {
             let mut clients = client_store.lock().await;
-            match clients.get_client(&msg.id) {
+            match clients.get_client(id.as_bytes()) {
                 Some(client) => {
-                    let msg = msg.get_message();
-                    client.add_message(&msg).unwrap();
-                    response = respond(StatusCode::ACCEPTED, "Message added to oracle".to_string())?;
+                    response = respond(StatusCode::ACCEPTED, client.ann_link.to_string())?;
                 },
                 None => {
                     response = respond(StatusCode::NOT_FOUND, "Referenced client was not found".to_string())?;
@@ -52,7 +49,45 @@ pub async fn attach_message(
             }
         },
         Err(e) => {
-            response = respond(StatusCode::BAD_REQUEST,"Malformed json request".to_string())?;
+            let error_message = format!("Malformed Json request: {}", e);
+            response = respond(StatusCode::BAD_REQUEST, error_message)?;
+        }
+    }
+    Ok(response)
+}
+
+
+pub async fn attach_message(
+    req: Request<Body>,
+    client_store: Arc<Mutex<ClientStore>>,
+    addr: &str
+) -> Result<Response<Body>> {
+    println!("{}", req.uri());
+    let req_data = hyper::body::to_bytes(req.into_body()).await.unwrap();
+    let response;
+
+    let req_struct: serde_json::Result<SendMessage> = serde_json::from_slice(&req_data);
+    match req_struct {
+        Ok(msg) => {
+            let mut clients = client_store.lock().await;
+            match clients.get_client(&msg.id.as_bytes().to_vec()) {
+                Some(client) => {
+                    if client.is_whitelisted(addr) {
+                        let msg = msg.get_message();
+                        client.add_message(&msg).unwrap();
+                        response = respond(StatusCode::ACCEPTED, "Message added to oracle".to_string())?;
+                    } else {
+                        response = respond(StatusCode::UNAUTHORIZED, "Not authorized to attach to oracle".to_string())?;
+                    }
+                },
+                None => {
+                    response = respond(StatusCode::NOT_FOUND, "Referenced client was not found".to_string())?;
+                }
+            }
+        },
+        Err(e) => {
+            let error_message = format!("Malformed Json request: {}", e);
+            response = respond(StatusCode::BAD_REQUEST, error_message)?;
         }
     }
     Ok(response)

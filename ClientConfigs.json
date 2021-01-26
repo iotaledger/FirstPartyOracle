@@ -1,8 +1,9 @@
 [
   {
     "node_config": {
-      "id": "An actually unique identifier 1",
-      "node": "http://192.168.1.68:14265"
+      "id": "exchange-1",
+      "node": "http://127.0.0.1:14265",
+      "whitelist": []
     },
     "send_options": {
       "depth": 1,
@@ -11,9 +12,9 @@
       "threads": 2
     },
     "req_input": {
-      "ticker": 5000,
+      "ticker": 10000,
       "request": {
-        "url": "https://us.market-api.kaiko.io/v2/data/trades.v1/exchanges/bfnx/spot/btc-usd/trades",
+        "url": "https://us.market-api.kaiko.io/v2/data/trades.v1/exchanges/bfnx/spot/iota-usd/trades/",
         "header": {
           "Accept": "application/json",
           "X-Api-Key": "0729dc53f1dee66c624fc15dccd8e55c"
@@ -23,10 +24,12 @@
     }
   },
 
+
   {
     "node_config": {
-      "id": "A second unique identifier",
-      "node": "http://192.168.1.68:14265"
+      "id": "IotaTest5",
+      "node": "http://127.0.0.1:14265",
+      "whitelist": ["127.0.0.1"]
     },
     "send_options": {
       "depth": 1,

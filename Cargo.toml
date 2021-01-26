@@ -1,5 +1,5 @@
 [package]
-name = "Oracle"
+name = "oracle"
 version = "0.1.0"
 authors = ["DyrellC <dyrell.chapman@iota.org>"]
 edition = "2018"
@@ -8,11 +8,11 @@ edition = "2018"
 
 [dependencies]
 iota-streams = { git = "https://github.com/iotaledger/streams", branch="v1.0.1" }
-tokio = { version = "1.0.2", features = ["full"] }
-anyhow = { version = "1.0.26", default-features = false }
+tokio = { version = "0.2", features = ["full"] }
+anyhow = { version = "1.0.26", default-features = true }
 rand = "0.7.3"
 ureq = { version = "2.0.1", features = ["json"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 hex = "0.4.2"
-hyper = { version = "0.13.9" }
+hyper = "0.13"

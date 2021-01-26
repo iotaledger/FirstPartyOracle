@@ -23,7 +23,7 @@ impl Retriever {
         let mut seed = String::from("RetrieverSalt");
         seed.push_str(&config.id);
 
-        let mut transport = StreamsClient::new_from_url(&config.node);
+        let transport = StreamsClient::new_from_url(&config.node);
         let mut client = Subscriber::new(&seed, "utf-8", PAYLOAD_BYTES, transport);
 
         let mut address = config.address.clone();
