@@ -1,25 +1,22 @@
 [
   {
     "node_config": {
-      "id": "exchange-1",
-      "node": "http://127.0.0.1:14265",
+      "id": "Client Id Here",
+      "node": "https://nodes.devnet.iota.org",
       "whitelist": []
     },
     "send_options": {
       "depth": 1,
       "min_weight_magnitude": 9,
       "local_pow": true,
-      "threads": 2
+      "threads": 1
     },
     "req_input": {
-      "ticker": 10000,
+      "ticker": 2000,
       "request": {
-        "url": "https://us.market-api.kaiko.io/v2/data/trades.v1/exchanges/bfnx/spot/iota-usd/trades/",
-        "header": {
-          "Accept": "application/json",
-          "X-Api-Key": "0729dc53f1dee66c624fc15dccd8e55c"
-        },
-        "body": {}
+        "url": "<Some Endpoint Here>",
+        "header": {"header key":  "header value"},
+        "body": {"body key":  "body value"}
       }
     }
   },
@@ -27,8 +24,8 @@
 
   {
     "node_config": {
-      "id": "IotaTest5",
-      "node": "http://127.0.0.1:14265",
+      "id": "Sensor/Gateway",
+      "node": "http://localhost:14265",
       "whitelist": ["127.0.0.1"]
     },
     "send_options": {

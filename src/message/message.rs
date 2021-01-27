@@ -47,13 +47,14 @@ impl SendMessage {
 
 #[derive(Serialize)]
 pub struct RetrievedMessage {
+    tag: String,
     pk: String,
     contents: MessageContents
 }
 
 impl RetrievedMessage {
-    pub fn new(pk: PublicKey, contents: MessageContents) -> RetrievedMessage {
-        RetrievedMessage { pk: hex::encode(pk.to_bytes()), contents }
+    pub fn new(tag: String,pk: PublicKey, contents: MessageContents) -> RetrievedMessage {
+        RetrievedMessage { tag,pk: hex::encode(pk.to_bytes()), contents }
     }
 
     pub fn get_contents(&self) -> &MessageContents {
@@ -62,5 +63,9 @@ impl RetrievedMessage {
 
     pub fn get_pk(&self) -> &str {
         &self.pk
+    }
+
+    pub fn get_tag(&self) -> &str {
+        &self.tag
     }
 }

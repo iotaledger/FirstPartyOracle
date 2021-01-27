@@ -8,8 +8,10 @@ use std::sync::Arc;
 use crate::{
     message::message::{MessageContents, RetrievedMessage},
     config::RetrieverConfig,
+    client::get_salt
 };
 use anyhow::Result;
+use iota_client::bytes_to_trytes;
 
 
 pub struct Retriever {
@@ -20,7 +22,7 @@ pub struct Retriever {
 
 impl Retriever {
     pub fn new(config: &RetrieverConfig) -> Result<Retriever> {
-        let mut seed = String::from("RetrieverSalt");
+        let mut seed = get_salt(32);
         seed.push_str(&config.id);
 
         let transport = StreamsClient::new_from_url(&config.node);
@@ -38,30 +40,24 @@ impl Retriever {
     }
 
     pub async fn fetch_msgs(&mut self) -> Result<Vec<RetrievedMessage>> {
-        let mut exists = true;
         let mut messages = Vec::new();
 
-        while exists {
-            let msgs = self.client.lock().await.fetch_next_msgs();
-            if msgs.is_empty() { exists = false }
-
-            for msg in msgs {
-                match msg.body {
-                    MessageContent::SignedPacket {
+        for msg in self.client.lock().await.fetch_next_msgs() {
+            match msg.body {
+                MessageContent::SignedPacket {
+                    pk,
+                    public_payload: p,
+                    masked_payload: m
+                } => {
+                    messages.push(RetrievedMessage::new(
+                        bytes_to_trytes(msg.link.msgid.as_ref()).to_string(),
                         pk,
-                        public_payload: p,
-                        masked_payload: m
-                    } => {
-                        messages.push(RetrievedMessage::new(
-                            pk,
-                            MessageContents::new(p.0, m.0)
-                        ))
-                    },
-                    _ => {}
-                }
+                        MessageContents::new(p.0, m.0)
+                    ))
+                },
+                _ => {}
             }
         }
         Ok(messages)
     }
-
 }

@@ -9,7 +9,6 @@ use crate::{
 };
 use anyhow::Result;
 use hyper::{Body, Request, Response, StatusCode, header::CONTENT_TYPE, };
-use std::net::SocketAddr;
 
 
 pub async fn spawn_oracle(client_store: Arc<Mutex<ClientStore>>, config: ClientConfig, executor: Arc<Mutex<Executor>>) -> Result<String> {
@@ -62,7 +61,6 @@ pub async fn attach_message(
     client_store: Arc<Mutex<ClientStore>>,
     addr: &str
 ) -> Result<Response<Body>> {
-    println!("{}", req.uri());
     let req_data = hyper::body::to_bytes(req.into_body()).await.unwrap();
     let response;
 
@@ -112,6 +110,7 @@ pub async fn retrieve_messages(
                 None => {
                     let mut retriever = Retriever::new(&config).unwrap();
                     let msgs = retriever.fetch_msgs().await.unwrap();
+                    retrievers.add_retriever(config.id.as_bytes().to_vec(), retriever).unwrap();
                     response = respond(StatusCode::FOUND, serde_json::to_string(&msgs).unwrap())?
                 }
             }

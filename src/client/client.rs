@@ -22,7 +22,6 @@ use tokio::sync::Mutex;
 use anyhow::anyhow;
 use serde::Deserialize;
 use crate::client::get_salt;
-use std::net::SocketAddr;
 
 
 pub struct Client {
@@ -74,8 +73,6 @@ impl Client {
 
     pub fn is_whitelisted(&self, addr: &str) -> bool {
         let whitelist = &self.config.node_config.whitelist;
-        println!("{:?}",whitelist);
-        println!("{}",addr);
         // If whitelist is set to accept from any source ip
         (whitelist.len() == 1 && whitelist[0] == "*") ||
         self.config.node_config.whitelist.contains(&addr.to_string())

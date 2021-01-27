@@ -1,7 +1,10 @@
 use crate::message::message::MessageContents;
 use crate::Result;
 use std::sync::Arc;
-use tokio::sync::{Mutex};
+use tokio::{
+    sync::{Mutex},
+    time::delay_for,
+};
 use core::time::Duration;
 use std::thread::sleep;
 use crate::store::ClientStore;
@@ -53,10 +56,16 @@ impl Executor {
     }
 
     fn spawn_thread(executor: Arc<Mutex<Executor>>) -> Result<()>{
+        let executor1 = executor.clone();
         tokio::spawn(async move {
             loop {
                 Executor::get_jobs(executor.clone()).await.unwrap();
-                Executor::handle_jobs(executor.clone()).await.unwrap();
+                sleep(Duration::from_millis(100));
+            }
+        });
+        tokio::spawn(async move {
+            loop {
+                Executor::handle_jobs(executor1.clone()).await.unwrap();
                 sleep(Duration::from_millis(100));
             }
         });
@@ -72,7 +81,7 @@ impl Executor {
                 let elapsed = start.elapsed().unwrap().as_millis();
                 if ticker > elapsed {
                     let wait = ticker - start.elapsed().unwrap().as_millis();
-                    sleep(Duration::from_millis(wait as u64))
+                    delay_for(Duration::from_millis(wait as u64)).await
                 }
             }
         });

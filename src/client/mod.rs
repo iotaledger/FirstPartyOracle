@@ -4,7 +4,6 @@ pub mod retriever;
 pub use client::*;
 pub use retriever::*;
 use rand::Rng;
-
 pub static ALPH9: &str = "abcdefghijklmnopqrstuvwxyz1234567890";
 
 pub fn get_salt(size: u8) -> String {

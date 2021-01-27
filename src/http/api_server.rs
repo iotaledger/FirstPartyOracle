@@ -1,23 +1,19 @@
 use crate::{
     store::{ClientStore, RetrieverStore},
-    http::{attach_message, retrieve_messages},
+    http::{attach_message, retrieve_messages, get_channel_id},
 };
 use std::{
     net::SocketAddr,
     sync::Arc,
 };
 use hyper::{
+    server::conn::AddrStream,
     service::{make_service_fn, service_fn},
     Request, Body, Response, StatusCode, Method, Server,
 };
 
-use tokio::{
-    net::TcpListener,
-    sync::Mutex
-};
+use tokio::sync::Mutex;
 use anyhow::Result;
-use hyper::server::conn::{AddrIncoming, AddrStream};
-use crate::http::get_channel_id;
 
 static NOTFOUND: &[u8] = "Not found".as_bytes();
 type GenericError = Box<dyn std::error::Error + Send + Sync>;
