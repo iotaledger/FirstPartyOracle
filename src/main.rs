@@ -29,6 +29,7 @@ async fn main() -> Result<()> {
     if let Ok(file) = File::open(&config_file) {
         let client_configs: serde_json::Result<Vec<ClientConfig>> = serde_json::from_reader(file);
         if client_configs.is_err() {
+            println!("Failed: Error with configuration...");
             return Err(anyhow!("Malformed configuration: {}", client_configs.err().unwrap()))
         }
         for client in client_configs.unwrap() {

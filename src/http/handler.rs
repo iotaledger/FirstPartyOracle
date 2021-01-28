@@ -108,10 +108,17 @@ pub async fn retrieve_messages(
                     response = respond(StatusCode::FOUND, serde_json::to_string(&msgs).unwrap())?
                 }
                 None => {
-                    let mut retriever = Retriever::new(&config).unwrap();
-                    let msgs = retriever.fetch_msgs().await.unwrap();
-                    retrievers.add_retriever(config.id.as_bytes().to_vec(), retriever).unwrap();
-                    response = respond(StatusCode::FOUND, serde_json::to_string(&msgs).unwrap())?
+                    match Retriever::new(&config) {
+                        Ok(mut retriever) => {
+                            let msgs = retriever.fetch_msgs().await.unwrap();
+                            retrievers.add_retriever(config.id.as_bytes().to_vec(), retriever).unwrap();
+                            response = respond(StatusCode::FOUND, serde_json::to_string(&msgs).unwrap())?
+                        },
+                        Err(e) => {
+                            let error_message = format!("Error generating retriever: {}", e);
+                            response = respond(StatusCode::EXPECTATION_FAILED, error_message).unwrap()
+                        }
+                    }
                 }
             }
         },
