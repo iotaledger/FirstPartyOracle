@@ -11,20 +11,37 @@ use anyhow::Result;
 use hyper::{Body, Request, Response, StatusCode, header::CONTENT_TYPE, };
 
 
-pub async fn spawn_oracle(client_store: Arc<Mutex<ClientStore>>, config: ClientConfig, executor: Arc<Mutex<Executor>>) -> Result<String> {
-    let id = config.node_config.id.as_bytes().to_vec();
-    let req = config.get_request_input();
-    let has_req = req.is_some();
+pub async fn spawn_oracle(
+    req: Request<Body>,
+    client_store: Arc<Mutex<ClientStore>>,
+    executor: Arc<Mutex<Executor>>
+) -> Result<Response<Body>> {
+    let req_data = hyper::body::to_bytes(req.into_body()).await.unwrap();
+    let response;
+    let config: serde_json::Result<ClientConfig> = serde_json::from_slice(&req_data);
+    match config {
+        Ok(config) => {
+            let id = config.node_config.id.as_bytes().to_vec();
+            let req = config.get_request_input();
+            let has_req = req.is_some();
 
-    let client = Client::new(config)?;
-    let addr = client.get_ann_link().clone();
+            let client = Client::new(config)?;
+            let addr = client.get_ann_link().clone();
 
-    client_store.lock().await.add_client(id.clone(), client)?;
+            client_store.lock().await.add_client(id.clone(), client)?;
 
-    if has_req {
-        Executor::spawn_requester(executor.clone(), id, req.unwrap())?;
+            if has_req {
+                Executor::spawn_requester(executor.clone(), id, req.unwrap())?;
+            }
+
+            response = respond(StatusCode::OK, addr.to_string())?
+        },
+        Err(e) => {
+            let error_message = format!("Malformed Json request: {}", e);
+            response = respond(StatusCode::BAD_REQUEST, error_message)?;
+        }
     }
-    Ok(addr.to_string())
+    Ok(response)
 }
 
 

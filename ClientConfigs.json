@@ -1,39 +1,25 @@
-[
-  {
-    "node_config": {
-      "id": "Client Id Here",
-      "node": "https://nodes.devnet.iota.org",
-      "whitelist": []
-    },
-    "send_options": {
-      "depth": 1,
-      "min_weight_magnitude": 9,
-      "local_pow": true,
-      "threads": 1
-    },
-    "req_input": {
-      "ticker": 2000,
-      "request": {
-        "url": "<Some Endpoint Here>",
-        "header": {"header key":  "header value"},
-        "body": {"body key":  "body value"}
+{
+  "node_config": {
+    "id": "Client Id Here",
+    "node": "https://nodes.devnet.iota.org:443",
+    "whitelist": ["<* for all>"]
+  },
+  "send_options": {
+    "depth": 1,
+    "min_weight_magnitude": 9,
+    "local_pow": true,
+    "threads": 1
+  },
+  "req_input": {
+    "ticker": 2000,
+    "request": {
+      "url": "<Some Endpoint Here>",
+      "header": {
+        "header key": "header value"
+      },
+      "body": {
+        "body key": "body value"
       }
     }
-  },
-
-
-  {
-    "node_config": {
-      "id": "Sensor/Gateway",
-      "node": "http://localhost:14265",
-      "whitelist": ["127.0.0.1"]
-    },
-    "send_options": {
-      "depth": 1,
-      "min_weight_magnitude": 9,
-      "local_pow": true,
-      "threads": 2
-    },
-      "req_input": null
   }
-]
+}
