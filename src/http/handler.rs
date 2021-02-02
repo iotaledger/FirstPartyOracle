@@ -38,6 +38,7 @@ pub async fn spawn_oracle(
 
             let client = Client::new(config)?;
             let addr = client.get_ann_link().clone();
+            let pk = client.get_pk();
 
             client_store.lock().await.add_client(id.clone(), client)?;
 
@@ -45,7 +46,8 @@ pub async fn spawn_oracle(
                 Executor::spawn_requester(executor.clone(), id, req.unwrap())?;
             }
 
-            response = respond(StatusCode::OK, addr.to_string())?
+            let message = format!("pk: {}, addr: {}", pk, addr.to_string());
+            response = respond(StatusCode::OK, message)?
         },
         Err(e) => {
             let error_message = format!("Malformed Json request: {}", e);

@@ -30,7 +30,8 @@ pub struct Client {
     client: Arc<Mutex<Author<StreamsClient>>>,
     send_pool: Vec<MessageContents>,
     last_link: Option<Address>,
-    pub config: ClientConfig
+    pub config: ClientConfig,
+    pub pk: String,
 }
 
 #[derive(Deserialize, Copy, Clone)]
@@ -54,7 +55,7 @@ impl Client {
 
         let mut client = Author::new(&seed, "utf-8", PAYLOAD_BYTES, multi_branch, transport);
         let ann_link = client.send_announce()?;
-
+        let pk = hex::encode(client.get_pk().as_bytes());
         let send_pool = Vec::<MessageContents>::new();
 
         Ok(Client {
@@ -63,13 +64,16 @@ impl Client {
             send_pool,
             last_link: Some(ann_link.clone()),
             ann_link,
-            config
+            config,
+            pk
         })
     }
 
     pub fn get_ann_link(&self) -> &Address {
         &self.ann_link
     }
+
+    pub fn get_pk(&self) -> String { self.pk.clone() }
 
     pub fn is_whitelisted(&self, addr: &str) -> bool {
         let whitelist = &self.config.node_config.whitelist;
