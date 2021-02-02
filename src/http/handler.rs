@@ -11,6 +11,17 @@ use anyhow::Result;
 use hyper::{Body, Request, Response, StatusCode, header::CONTENT_TYPE, };
 
 
+pub async fn preflight_response(
+) -> Result<Response<Body>> {
+    Ok(Response::builder()
+        .status(StatusCode::OK)
+        .header("Access-Control-Allow-Origin", "*")
+        .header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE")
+        .header("Access-Control-Allow-Headers", "Content-Type")
+        .body(Body::from("OK"))
+        .unwrap())
+}
+
 pub async fn spawn_oracle(
     req: Request<Body>,
     client_store: Arc<Mutex<ClientStore>>,

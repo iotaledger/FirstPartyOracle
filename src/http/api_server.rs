@@ -15,7 +15,7 @@ use hyper::{
 use tokio::sync::Mutex;
 use anyhow::Result;
 use crate::threads::Executor;
-use crate::http::spawn_oracle;
+use crate::http::{spawn_oracle, preflight_response};
 
 static NOTFOUND: &[u8] = "Not found".as_bytes();
 static NOTAUTH: &[u8] = "Oracles can only be spawned by local instance".as_bytes();
@@ -46,7 +46,6 @@ pub async fn start(
     let server = Server::bind(&addr).serve(service);
     println!("Server started at {}", port);
     server.await?;
-
     Ok(())
 }
 
@@ -57,17 +56,20 @@ async fn responder(
     executor: Arc<Mutex<Executor>>,
     addr: String
 ) -> Result<Response<Body>> {
-    match(req.method(), req.uri().path()) {
-        (&Method::POST, "/spawn_oracle") => {
-            if addr == "127.0.0.1" {
-                spawn_oracle(req, client_store.clone(), executor.clone()).await
-            } else {
-                Ok(Response::builder().status(StatusCode::UNAUTHORIZED).body(NOTAUTH.into()).unwrap())
-            }
-        },
-        (&Method::POST, "/attach_to_oracle") => attach_message(req, client_store.clone(), &addr).await,
-        (&Method::GET, "/get_channel_id") => get_channel_id(req, client_store.clone()).await,
-        (&Method::POST, "/fetch_from_oracle") => retrieve_messages(req, retriever_store.clone()).await,
-        _ => Ok(Response::builder().status(StatusCode::NOT_FOUND).body(NOTFOUND.into()).unwrap())
+    match req.method() {
+        &Method::OPTIONS => preflight_response().await,
+        _ => match (req.method(), req.uri().path()) {
+            (&Method::POST, "/spawn_oracle") => {
+                if addr == "127.0.0.1" {
+                    spawn_oracle(req, client_store.clone(), executor.clone()).await
+                } else {
+                    Ok(Response::builder().status(StatusCode::UNAUTHORIZED).body(NOTAUTH.into()).unwrap())
+                }
+            },
+            (&Method::POST, "/attach_to_oracle") => attach_message(req, client_store.clone(), &addr).await,
+            (&Method::GET, "/get_channel_id") => get_channel_id(req, client_store.clone()).await,
+            (&Method::POST, "/fetch_from_oracle") => retrieve_messages(req, retriever_store.clone()).await,
+            _ => Ok(Response::builder().status(StatusCode::NOT_FOUND).body(NOTFOUND.into()).unwrap())
+        }
     }
 }
