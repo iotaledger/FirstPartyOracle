@@ -21,7 +21,7 @@ impl Request {
                 req = req.set(k, v.as_str().unwrap());
             }
         }
-        let resp = req.call().unwrap();
+        let resp = req.call()?;
         Ok(resp)
     }
 

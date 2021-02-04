@@ -93,10 +93,22 @@ impl Executor {
         let mut clients = executor.clients.lock().await;
         let client = clients.get_client(id).unwrap();
 
-        let data = req.request.get();
-        let resp = &data.unwrap().into_string().unwrap();
-        client.add_message(&MessageContents::new(Vec::new(), resp.as_bytes().to_vec()))?;
-        Ok(())
+        match req.request.get() {
+            Ok(res) => {
+                client.add_message(&MessageContents::new(
+                        Vec::new(),
+                        res. into_string().unwrap().as_bytes().to_vec()
+                ))?;
+                Ok(())
+            },
+            Err(e) => {
+                println!("Error in requester for client {}. Data not added to oracle.\nCause: {}",
+                         String::from_utf8(client.id.clone()).unwrap(),
+                         e
+                );
+                Ok(())
+            }
+        }
     }
 
     async fn get_jobs(executor: Arc<Mutex<Executor>>) -> Result<()> {
