@@ -8,8 +8,8 @@ use crate::{
     message::SendMessage,
 };
 use anyhow::Result;
-use hyper::{Body, Request, Response, StatusCode, header::CONTENT_TYPE, };
-
+use hyper::{Body, Request, Response, StatusCode, header::CONTENT_TYPE};
+use iota_streams::core::prelude::HashMap;
 
 pub async fn preflight_response(
 ) -> Result<Response<Body>> {
@@ -17,7 +17,7 @@ pub async fn preflight_response(
         .status(StatusCode::OK)
         .header("Access-Control-Allow-Origin", "*")
         .header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE")
-        .header("Access-Control-Allow-Headers", "Content-Type")
+        .header("Access-Control-Allow-Headers", "*")
         .body(Body::from("OK"))
         .unwrap())
 }
@@ -62,11 +62,13 @@ pub async fn get_channel_id(
     req: Request<Body>,
     client_store: Arc<Mutex<ClientStore>>
 ) -> Result<Response<Body>> {
-    let req_data = hyper::body::to_bytes(req.into_body()).await.unwrap();
     let response;
-    let id: serde_json::Result<String> = serde_json::from_slice(&req_data);
-    match id {
-        Ok(id) => {
+    let params: HashMap<String, String> = req.uri().query().map(|v|{
+        url::form_urlencoded::parse(v.as_bytes()).into_owned().collect()
+    }).unwrap_or_else(|| HashMap::new());
+
+    match params.get("id") {
+        Some(id) => {
             let mut clients = client_store.lock().await;
             match clients.get_client(id.as_bytes()) {
                 Some(client) => {
@@ -77,8 +79,8 @@ pub async fn get_channel_id(
                 }
             }
         },
-        Err(e) => {
-            let error_message = format!("Malformed Json request: {}", e);
+        None => {
+            let error_message = format!("Malformed request, missing id");
             response = respond(StatusCode::BAD_REQUEST, error_message)?;
         }
     }
