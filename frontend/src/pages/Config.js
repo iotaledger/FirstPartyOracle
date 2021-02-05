@@ -1,23 +1,18 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Space, Tabs } from 'antd';
-import { AppContext } from '../context/globalState';
-import { Layout } from '../components';
+import { Layout, Oracles } from '../components';
 import banner from '../assets/smart-contracts.svg';
 
 const { TabPane } = Tabs;
 
 const Config = () => {
-	const { oracles, retrievers } = useContext(AppContext);
-
 	useEffect(() => {
 		const onLoad = async () => {
 			await localStorage.removeItem('config');
 		}
 		onLoad();
 	}, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-	console.log(oracles, retrievers);
 
 	return (
 		<Layout>
@@ -29,21 +24,24 @@ const Config = () => {
 				<br />
 				<Tabs tabBarGutter={50} centered defaultActiveKey='1'>
 					<TabPane tab='Oracles' key='1'>
-						<div className='oracle-card-wrapper'>
-							<Space size='middle' direction='horizontal'>
-								<div>
-									<h1>Create an Oracle</h1>
-									<p>
-										Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Lorem ipsum
-										dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Lorem ipsum dolor.
-									</p>
-								</div>
-								<Space size='middle'>
-									<Link to={'/oracle/1'}>
-										<button className='custom-button'>Create Oracle</button>
-									</Link>
+						<div className="list-items-wrapper">
+							<div className='oracle-card-wrapper'>
+								<Space size='middle' direction='horizontal'>
+									<div>
+										<h1>Create an Oracle</h1>
+										<p>
+											Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Lorem ipsum
+											dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Lorem ipsum dolor.
+										</p>
+									</div>
+									<Space size='middle'>
+										<Link to={'/oracle/1'}>
+											<button className='custom-button'>Create Oracle</button>
+										</Link>
+									</Space>
 								</Space>
-							</Space>
+							</div>
+							<Oracles />
 						</div>
 					</TabPane>
 					<TabPane tab='Retrievers' key='2'>
