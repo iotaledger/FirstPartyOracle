@@ -2,12 +2,13 @@
 	width: 182px;
 	height: 48px;
 	padding: 12px 30px;
+	font-size: 12px;
 	color: white;
 	background: $base-color-blue;
 	border: 1px solid #d8e3f5;
 	border-radius: 10px;
 	transition: all 0.5s;
-	font-weight: 500;
+	font-weight: bold;
 	cursor: pointer;
 
 	&:hover {
@@ -28,12 +29,13 @@
 	width: 182px;
 	height: 48px;
 	padding: 12px 30px;
+	font-size: 12px;
 	color: $base-color-blue;
 	background: white;
 	border: 1px solid #d8e3f5;
 	border-radius: 10px;
 	transition: all 0.5s;
-	font-weight: 500;
+	font-weight: bold;
 	cursor: pointer;
 
 	&:hover {
