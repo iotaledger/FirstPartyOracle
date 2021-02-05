@@ -6,8 +6,8 @@ use crate::{
     threads::Executor,
     client::{Client, Retriever},
     message::SendMessage,
+    Result, anyhow
 };
-use anyhow::Result;
 use hyper::{Body, Request, Response, StatusCode, header::CONTENT_TYPE};
 use iota_streams::core::prelude::HashMap;
 
@@ -21,6 +21,36 @@ pub async fn preflight_response(
         .body(Body::from("OK"))
         .unwrap())
 }
+
+pub async fn spawn_oracle_on_start(
+    client_store: Arc<Mutex<ClientStore>>,
+    config: ClientConfig,
+    executor: Arc<Mutex<Executor>>
+) -> Result<String> {
+    let id = config.node_config.id.as_bytes().to_vec();
+    let req = config.get_request_input();
+    let has_req = req.is_some();
+
+    match Client::new(config) {
+        Ok(client) => {
+            let addr = client.get_ann_link().clone();
+            let pk = client.get_pk();
+
+            client_store.lock().await.add_client(id.clone(), client)?;
+
+            if has_req {
+                Executor::spawn_requester(executor.clone(), id, req.unwrap())?;
+            }
+
+            let message = format!("New Client started\npk: {}, \naddr: {}", pk, addr.to_string());
+            Ok(message)
+        },
+        Err(e) => {
+            Err(anyhow!("There was an error creating the client: {}", e))
+        }
+    }
+}
+
 
 pub async fn spawn_oracle(
     req: Request<Body>,

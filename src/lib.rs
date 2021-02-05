@@ -5,4 +5,4 @@ pub mod message;
 pub mod threads;
 pub mod config;
 
-pub use anyhow::Result;
+pub use anyhow::{Result, anyhow};
