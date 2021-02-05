@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import fetch from 'node-fetch';
-import { Space, Divider } from 'antd';
+import { Space, Divider, Alert } from 'antd';
 import { AppContext } from '../context/globalState';
 import { Layout } from '../components';
 
@@ -52,6 +52,13 @@ const Config4 = ({ history }) => {
 							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Lorem ipsum dolor sit
 							amet. Consectetur adipiscing elit. Aenean euismod bibendum laoreet. Lorem ipsum dolor.
 						</p>
+						<div className='alert-wrapper'>
+							<Alert
+								message='Please disable Content Blocker plugins for this site in order to make requests to localhost'
+								type='info'
+								showIcon
+							/>
+						</div>
 					</Space>
 				</div>
 				<Divider />
