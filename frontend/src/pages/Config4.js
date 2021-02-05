@@ -21,6 +21,7 @@ const Config4 = ({ history }) => {
 		})
 		.then(async (res) => {
 			const response = await res.text();
+
 			const group = response.split(', ').map(entry =>
 				entry.replace('pk: ', '').replace('addr: ', '').replace('<', '').replace('>', '')
 			);
@@ -31,7 +32,9 @@ const Config4 = ({ history }) => {
 				pk: group[0],
 				address: group[1]
 			};
-			updateItems([ ...oracles, oracle ]);
+
+			await updateItems('oracles', [ ...oracles, oracle ]);
+
 			history.push('/');
 		})
 		.catch(error => {
