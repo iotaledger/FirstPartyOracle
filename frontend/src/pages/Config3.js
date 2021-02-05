@@ -109,28 +109,30 @@ const Config3 = ({ history }) => {
 									<div className='input-wrapper-dynamic-md'>
 										<Form.List name='headers'>
 											{(fields, { add, remove }, { errors }) => (
-												<React.Fragment>
+												<div>
 													{fields.map((field, index) => (
 														<Form.Item label={index === 0 ? 'Headers' : ''} required={false} key={field.key}>
 															<Row key={field.key} gutter={[30, 0]}>
 																<Col span={12}>
-																	<Form.Item name={[field.name, 'name']} fieldKey={[field.fieldKey, 'name']}>
+																	<Form.Item name={[field.name, 'name']} fieldKey={[field.fieldKey, 'name']} noStyle>
 																		<Input placeholder='Header name' className='rounded-input' />
 																	</Form.Item>
 																</Col>
 																<Col span={12}>
-																	<Form.Item name={[field.name, 'value']} fieldKey={[field.value, 'value']} required>
+																	<Form.Item name={[field.name, 'value']} fieldKey={[field.value, 'value']} required noStyle>
 																		<Input placeholder='Value' className='rounded-input' />
 																	</Form.Item>
 																</Col>
-																<Col offset={23}>
-																	{fields.length > 1 ? (
-																		<MinusCircleOutlined
-																			className='dynamic-delete-button'
-																			onClick={() => remove(field.name)}
-																		/>
-																	) : null}
-																</Col>
+																<div className='delete-btn-wrpr'>
+																	<Form.Item>
+																		{fields.length > 1 ? (
+																			<MinusCircleOutlined
+																				className='dynamic-delete-button'
+																				onClick={() => remove(field.name)}
+																			/>
+																		) : null}
+																	</Form.Item>
+																</div>
 															</Row>
 														</Form.Item>
 													))}
@@ -140,7 +142,7 @@ const Config3 = ({ history }) => {
 														</Button>
 														<Form.ErrorList errors={errors} />
 													</Form.Item>
-												</React.Fragment>
+												</div>
 											)}
 										</Form.List>
 									</div>

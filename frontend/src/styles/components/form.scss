@@ -75,6 +75,10 @@
 		padding: 9px;
 	}
 
+	.ant-checkbox-checked .ant-checkbox-inner::after {
+		transform: rotate(45deg) scale(1) translate(-40%, -60%);
+	}
+
 	.ant-checkbox + span {
 		color: $base-color-text-2;
 		font-weight: 500;
@@ -88,20 +92,26 @@
 	.input-wrapper-dynamic-md {
 		display: flex;
 		flex-direction: column;
+		align-items: space-between;
 		width: 100%;
-
-		.dynamic-delete-button {
-			bottom: 35px;
-			padding-left: 5px;
-		}
 
 		.ant-form-item {
 			margin-bottom: 0;
+
+			.delete-btn-wrpr {
+				margin-left: 98%;
+				height: 20px;
+
+				.dynamic-delete-button {
+					position: relative;
+					bottom: 40px;
+				}
+			}
 		}
 
 		.add-item-btn {
 			position: relative;
-			top: 5px;
+			bottom: 10px;
 			margin-bottom: 20px;
 		}
 	}
