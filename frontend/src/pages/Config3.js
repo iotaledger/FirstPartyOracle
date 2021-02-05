@@ -6,7 +6,7 @@ import { Layout } from '../components';
 
 const { TabPane } = Tabs;
 
-const Config3 = ({ match, history }) => {
+const Config3 = ({ history }) => {
 	const { currentConfig, updateConfig } = useContext(AppContext);
 	const [form] = Form.useForm();
 
@@ -60,9 +60,9 @@ const Config3 = ({ match, history }) => {
 					onFinish={onSubmit}
 					hideRequiredMark
 					initialValues={{ headers: [''], whitelist: [''] }}>
-				<Tabs tabBarGutter={50} centered defaultActiveKey='1'>
-					<TabPane tab='Raw data' key='1'>
-						<div className='tab-container'>
+					<Tabs tabBarGutter={50} centered defaultActiveKey='1'>
+						<TabPane tab='Raw data' key='1'>
+							<div className='tab-container'>
 								<div className='input-wrapper'>
 									<Form.List name='whitelist'>
 										{(fields, { add, remove }, { errors }) => (
@@ -89,10 +89,10 @@ const Config3 = ({ match, history }) => {
 										)}
 									</Form.List>
 								</div>
-						</div>
-					</TabPane>
-					<TabPane tab='API Retriever' key='2'>
-						<div className='tab-container'>
+							</div>
+						</TabPane>
+						<TabPane tab='API Retriever' key='2'>
+							<div className='tab-container'>
 								<div className='input-wrapper-md'>
 									<Row justify='space-between' align='middle' gutter={30}>
 										<Col span={12}>
@@ -109,7 +109,7 @@ const Config3 = ({ match, history }) => {
 									<div className='input-wrapper-dynamic-md'>
 										<Form.List name='headers'>
 											{(fields, { add, remove }, { errors }) => (
-												<>
+												<React.Fragment>
 													{fields.map((field, index) => (
 														<Form.Item label={index === 0 ? 'Headers' : ''} required={false} key={field.key}>
 															<Row key={field.key} gutter={[30, 0]}>
@@ -140,7 +140,7 @@ const Config3 = ({ match, history }) => {
 														</Button>
 														<Form.ErrorList errors={errors} />
 													</Form.Item>
-												</>
+												</React.Fragment>
 											)}
 										</Form.List>
 									</div>
@@ -152,20 +152,20 @@ const Config3 = ({ match, history }) => {
 										</Col>
 									</Row>
 								</div>
-						</div>
-					</TabPane>
-				</Tabs>
-				<Divider />
-								<div className='btns-wrapper'>
-									<Space size='middle'>
-										<button onClick={() => history.goBack()} className='custom-button-2'>
-											Back
-										</button>
-										<button className='custom-button' type='submit'>
-											Continue
-										</button>
-									</Space>
-								</div>
+							</div>
+						</TabPane>
+					</Tabs>
+					<Divider />
+					<div className='btns-wrapper'>
+						<Space size='middle'>
+							<button onClick={() => history.goBack()} className='custom-button-2'>
+								Back
+							</button>
+							<button className='custom-button' type='submit'>
+								Continue
+							</button>
+						</Space>
+					</div>
 				</Form>
 			</div>
 		</Layout>
