@@ -1,28 +1,95 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Space, Divider, Card, Col, Row, Button } from 'antd';
+import fetch from 'node-fetch';
+import { useParams } from 'react-router';
+import { useHistory } from 'react-router-dom';
+import { AppContext } from '../context/globalState';
 import { Layout, Loading } from '../components';
 import backBtn from '../assets/back-btn.svg';
 
-const ConfigOverview = ({ history }) => {
-	const [retriever, setRetriever] = useState({});
-	const [message, setMessage] = useState({});
-	const [decodedMessage, setDecodedMessage] = useState({});
-	const [loading, setLoading] = useState(true);
+const FetchResults = () => {
+	let history = useHistory();
+	const { retrieverId } = useParams();
+	const { retrievers } = useContext(AppContext);
+	const existingRetriever = history?.location?.state || null;
+
+	const [retriever, setRetriever] = useState(existingRetriever);
+	const [messages, setMessages] = useState([]);
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
-		async function getData() {
-			let retriever = await JSON.parse(localStorage.getItem('retriever'));
-			let message = await JSON.parse(localStorage.getItem('message'));
-			let decodedMessage = await JSON.parse(localStorage.getItem('decodedMessage'));
-			if (retriever && message && decodedMessage) {
-				setRetriever(retriever);
-				setMessage(message);
-				setDecodedMessage(decodedMessage);
-				setLoading(false);
-			}
+		const onLoad = async () => {
+			await fetchData();
 		}
-		getData();
+
+		onLoad();
+
+		const fetchInterval = setInterval(async () => {
+			await fetchData();
+		}, 10000); // fetch every 10 seconds
+
+		// Removing the timeout before unmounting the component
+		return () => {
+			fetchInterval && clearInterval(fetchInterval);
+		};
+
 	}, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+	useEffect(() => {
+		try {
+			if (!existingRetriever && retrievers.length) {
+				const existingRetriever = retrievers.find(item => item.id === retrieverId);
+				console.log('Retriever 11', existingRetriever);
+				setRetriever(existingRetriever);
+			};
+		} catch (error) {
+			console.error(error);
+		}
+	}, [retrievers.length]); // eslint-disable-line react-hooks/exhaustive-deps
+
+	const fetchData = async () => {
+		try {
+			console.log('Fetch');
+			const serverAPI = 'http://127.0.0.1:8080/fetch_from_oracle';
+			const { id, node, address } = existingRetriever;
+
+			setLoading(true);
+			await fetch(serverAPI, {
+				method: 'POST',
+				body: JSON.stringify({ id, node, address }),
+				headers: {
+					'Access-Control-Allow-Origin': '*',
+					'Content-Type': 'application/json'
+				}
+			})
+				.then(res => res.json())
+				.then(messages => {
+					if (messages.length) {
+						const masked = messages?.[0]?.contents?.masked;
+						const decoded = String.fromCharCode.apply(null, masked);
+						const message = { 
+							messageId: messages?.[0]?.tag, 
+							sender: messages?.[0]?.pk,
+							content: JSON.parse(decoded)
+						};
+				  
+						setMessages(messages => [...messages, message]);
+						console.log('message', message);
+					};
+
+					setLoading(false);
+				})
+				.catch(error => {
+					setLoading(false);
+					console.log(error);
+				})
+		} catch (error) {
+			setLoading(false);
+			console.error(error);
+		}
+	}
+
+	console.log('messages', messages);
 
 	return (
 		<Layout>
@@ -61,18 +128,25 @@ const ConfigOverview = ({ history }) => {
 					</Row>
 					<br />
 					<div className='form-wrapper'>
-						<Space size={100} direction='horizontal'>
-							<Space align='start' size={2} direction='vertical'>
-								<p>MESSAGE ID</p>
-								<b>{message.tag}</b>
-							</Space>
-							<Space align='start' size={2} direction='vertical'>
-								<p>SENDER</p>
-								<b>{message.pk}</b>
-							</Space>
-						</Space>
-						<div className='wrap'>{decodedMessage.continuation_token}</div>
-						<Divider />
+						{
+							messages.map(msg => (
+								<React.Fragment>
+									<Space size={100} direction='horizontal'>
+										<Space align='start' size={2} direction='vertical'>
+											<p>MESSAGE ID</p>
+											<b>{msg?.messageId}</b>
+										</Space>
+										<Space align='start' size={2} direction='vertical'>
+											<p>SENDER</p>
+											<b>{msg?.sender}</b>
+										</Space>
+									</Space>
+									<div className='wrap'>{msg?.content}</div>
+									<Divider />
+								</React.Fragment>
+							))
+						}
+
 					</div>
 				</React.Fragment>
 			)}
@@ -80,4 +154,4 @@ const ConfigOverview = ({ history }) => {
 	);
 };
 
-export default ConfigOverview;
+export default FetchResults;
