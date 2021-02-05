@@ -4,7 +4,7 @@ import fetch from 'node-fetch';
 import { useParams } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import { AppContext } from '../context/globalState';
-import { Layout, Loading } from '../components';
+import { Layout, Loading, Message } from '../components';
 import backBtn from '../assets/back-btn.svg';
 
 const FetchResults = () => {
@@ -141,7 +141,9 @@ const FetchResults = () => {
 											<b>{msg?.sender}</b>
 										</Space>
 									</Space>
-									<div className='wrap'>{msg?.content}</div>
+									<div className='wrap'>
+										<Message message={msg?.content} />
+									</div>
 									<Divider />
 								</React.Fragment>
 							))
