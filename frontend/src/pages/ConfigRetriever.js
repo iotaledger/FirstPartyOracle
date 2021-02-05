@@ -7,7 +7,7 @@ import { Layout } from '../components';
 const ConfigRetriever = ({ history }) => {
 	const [form] = Form.useForm();
 
-	const serverAPI = 'http://localhost:8080/fetch_from_oracle';
+	const serverAPI = 'http://127.0.0.1:8080/fetch_from_oracle';
 
 	const data = {
 		id: randomstring.generate(),

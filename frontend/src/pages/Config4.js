@@ -6,7 +6,7 @@ import { Layout } from '../components';
 
 const Config4 = ({ history }) => {
 	const { currentConfig, oracles, updateItems } = useContext(AppContext);
-	const serverAPI = 'https://oracles-proxy.vercel.app/spawn_oracle';
+	const serverAPI = 'http://127.0.0.1:8080/spawn_oracle';
 
 	const spawnOracle = async () => {
 		console.log("currentConfig", currentConfig);
