@@ -5,10 +5,25 @@ import { AppContext } from '../context/globalState';
 import { Layout } from '../components';
 
 const { TabPane } = Tabs;
+const { TextArea } = Input;
 
 const Config3 = ({ history }) => {
 	const { currentConfig, updateConfig } = useContext(AppContext);
 	const [form] = Form.useForm();
+
+	const sanitizeJSON = unsanitized => {	
+		return unsanitized
+		.replace(/\\/g, "\\\\")
+		.replace(/\n/g, "\\n")
+		.replace(/\r/g, "\\r")
+		.replace(/\t/g, "\\t")
+		.replace(/\f/g, "\\f")
+		.replace(/"/g,"\\\"")
+		.replace(/'/g,"\\\'")
+		.replace(/\&/g, "\\&"); 
+		// .replaceAll(' ', '')
+		// .replaceAll(/\n/, '')
+	}
 
 	const onSubmit = values => {
 		if (values.whitelist) {
@@ -18,7 +33,7 @@ const Config3 = ({ history }) => {
 			currentConfig.req_input.ticker = Number(values.ticker);
 		}
 		if (values.body) {
-			currentConfig.req_input.request.body = values.body;
+			currentConfig.req_input.request.body = sanitizeJSON(values.body);
 		}
 		if (values.headers) {
 			values.headers && values.headers.forEach(({ name, value }) => {
@@ -33,6 +48,13 @@ const Config3 = ({ history }) => {
 
 		updateConfig(currentConfig);
 		history.push('/oracle/4');
+	};
+
+	const handleKeyDown = e => {
+		if (e.key === 'Enter') {
+			e.preventDefault();
+		}
+		history.goBack();
 	};
 
 	return (
@@ -53,7 +75,6 @@ const Config3 = ({ history }) => {
 					form={form}
 					layout='vertical'
 					validateTrigger='onSubmit'
-					onKeyDown={e => (e.key === 'Enter' ? e.preventDefault() : '')}
 					scrollToFirstError
 					colon={false}
 					name='api-retriever-form'
@@ -149,7 +170,7 @@ const Config3 = ({ history }) => {
 									<Row justify='space-between' align='middle' gutter={30}>
 										<Col span={24}>
 											<Form.Item name='body' label='Body'>
-												<Input className='body-input' />
+												<TextArea autoSize={{ minRows: 5, maxRows: 10 }} className='body-input' />
 											</Form.Item>
 										</Col>
 									</Row>
@@ -160,7 +181,7 @@ const Config3 = ({ history }) => {
 					<Divider />
 					<div className='btns-wrapper'>
 						<Space size='middle'>
-							<button onClick={() => history.goBack()} className='custom-button-2'>
+							<button onClick={handleKeyDown} type='button' className='custom-button-2'>
 								Back
 							</button>
 							<button className='custom-button' type='submit'>
