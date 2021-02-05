@@ -60,7 +60,7 @@ const Oracles = () => {
 			{
 				oracle.retriever ? <Menu.Divider /> : null
 			}
-			<Menu.Item className='oracle-delete' key='delete'>
+			<Menu.Item key='delete'>
 				<img src={deleteOracle} alt='' />
 				Delete Oracle
 			</Menu.Item>
