@@ -1,48 +1,45 @@
-import React from 'react';
-import fetch from 'node-fetch';
+import React, { useContext, useState } from 'react';
 import randomstring from 'randomstring';
+import { useHistory } from 'react-router-dom';
 import { Form, Input, Space, Divider } from 'antd';
+import { AppContext } from '../context/globalState';
 import { Layout } from '../components';
 
-const ConfigRetriever = ({ history }) => {
+const ConfigRetriever = () => {
+	let history = useHistory();
+	const { retrievers, updateItems } = useContext(AppContext);
+	const existingRetriever = history?.location?.state || { 
+		id: randomstring.generate(7),
+		node: 'https://nodes.iota.org:443'
+	}
+	const [retriever, setRetriever] = useState(existingRetriever);
 	const [form] = Form.useForm();
 
-	const serverAPI = 'http://127.0.0.1:8080/fetch_from_oracle';
-
-	const data = {
-		id: randomstring.generate(),
-		node: 'https://nodes.thetangle.org:443',
-		address: 'a2d1838abeea5fd161eae4f4bb4f902d267ded343b1facc7d25426734ea11e420000000000000000:ac6f6ab9c38e652c80deb9e5'
-	};
-
 	const onSubmit = async values => {
-		localStorage.setItem('retriever', data);
-		// if (values.id && values.node && values.address) {
-		// 	data.id = values.id;
-		// 	data.node = values.node;
-		// 	data.address = values.address;
-		// }
-		await fetch(serverAPI, {
-			method: 'POST',
-			body: JSON.stringify(data),
-			headers: {
-				'Access-Control-Allow-Origin': '*',
-				'Content-Type': 'application/json'
-			}
-		})
-			.then(res => res.json())
-			.then(json => {
-				console.log('json', json);
-				const masked = json?.[0]?.contents?.masked;
-				const decoded = String.fromCharCode.apply(null, masked);
-				localStorage.setItem('message', JSON.stringify(json?.[0]));
-				localStorage.setItem('decodedMessage', decoded);
-				const decodedJson = JSON.parse(decoded);
-				console.log('decodedJson', decodedJson);
-				return decodedJson;
-			});
+		const data = {};
+		if (values.id && values.node && values.address) {
+			data.id = values.id;
+			data.node = values.node;
+			data.address = values.address;
+		}
 
-		history.push('/');
+		setRetriever(data);
+		const existing = retrievers.find(item => item.id === existingRetriever.id);
+		if (existing) {
+			const updatedList = retrievers;
+			updatedList.forEach(item => {
+				if (item.id === existingRetriever.id) {
+					item.id = data.id;
+					item.node = data.node;
+					item.address = data.address;
+				} 
+			});
+			await updateItems('retrievers', updatedList);
+		} else {
+			await updateItems('retrievers', [ ...retrievers, data ]);
+		}
+
+		history.push(`/fetch/${data.id}`, data);
 	};
 
 	return (
@@ -69,8 +66,9 @@ const ConfigRetriever = ({ history }) => {
 					validateTrigger='onSubmit'
 					onKeyDown={e => (e.key === 'Enter' ? e.preventDefault() : '')}
 					initialValues={{
-						id: 1,
-						node: 'https://nodes.iota.org:443'
+						id: retriever?.id,
+						node: retriever?.node,
+						address: retriever?.address || null
 					}}
 					hideRequiredMark>
 					<div className='input-wrapper'>
@@ -102,7 +100,7 @@ const ConfigRetriever = ({ history }) => {
 						</Form.Item>
 						<Form.Item
 							name='address'
-							label='Endpoint'
+							label='Address'
 							required
 							hasFeedback
 							rules={[
@@ -118,7 +116,7 @@ const ConfigRetriever = ({ history }) => {
 					<Divider />
 					<div className='btns-wrapper'>
 						<Space size='middle'>
-							<button onClick={() => history.goBack()} className='custom-button-2'>
+							<button onClick={() => history.push('/')} className='custom-button-2'>
 								Back
 							</button>
 							<button className='custom-button' type='submit'>
