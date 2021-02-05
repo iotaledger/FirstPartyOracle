@@ -9,8 +9,6 @@ const Config4 = ({ history }) => {
 	const serverAPI = 'http://127.0.0.1:8080/spawn_oracle';
 
 	const spawnOracle = async () => {
-		console.log("currentConfig", currentConfig);
-
 		fetch(serverAPI, {
 			method: 'POST',
 			body: JSON.stringify(currentConfig),

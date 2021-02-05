@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Menu, Dropdown } from 'antd';
-import { useHistory } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 import { EllipsisOutlined } from '@ant-design/icons';
 import { AppContext } from '../context/globalState';
 import view from '../assets/view.svg';
@@ -25,7 +25,7 @@ const Oracles = () => {
 	const handleMenuClick = (event, oracle) => {
 		switch (event.key) {
 			case 'view':
-				history.push(`/fetch/${oracle.retriever}`);
+				history.push(`/fetch/${oracle.retriever}`, oracle);
 				break;
 			case 'configure':
 				history.push(`/retriever/${oracle.retriever}`, oracle);
