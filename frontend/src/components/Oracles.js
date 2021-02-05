@@ -1,13 +1,14 @@
 import React, { useContext } from 'react';
 import { Menu, Dropdown } from 'antd';
-import { withRouter } from 'react-router';
+import { useHistory } from "react-router-dom";
 import { EllipsisOutlined } from '@ant-design/icons';
 import { AppContext } from '../context/globalState';
 import view from '../assets/view.svg';
 import configure from '../assets/configure.svg';
 import deleteOracle from '../assets/delete.svg';
 
-const Oracles = ({ history }) => {
+const Oracles = () => {
+	let history = useHistory();
 	const { oracles, retrievers, updateItems } = useContext(AppContext);
 
 	const assign = async oracle => {
@@ -27,7 +28,7 @@ const Oracles = ({ history }) => {
 				history.push(`/fetch/${oracle.retriever}`);
 				break;
 			case 'configure':
-				history.push(`/retriever/${oracle.retriever}`);
+				history.push(`/retriever/${oracle.retriever}`, oracle);
 				break;
 			case 'delete':
 				const list = oracles.filter(item => item.id !== oracle.id);
@@ -102,4 +103,4 @@ const Oracles = ({ history }) => {
 	);
 }
 
-export default withRouter(Oracles);
+export default Oracles;
