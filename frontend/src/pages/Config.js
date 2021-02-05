@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Space, Tabs } from 'antd';
-import { Layout, Oracles } from '../components';
+import { Layout, Oracles, Retrievers } from '../components';
 import banner from '../assets/smart-contracts.svg';
 
 const { TabPane } = Tabs;
@@ -45,21 +45,24 @@ const Config = () => {
 						</div>
 					</TabPane>
 					<TabPane tab='Retrievers' key='2'>
-						<div className='oracle-card-wrapper'>
-							<Space size='middle' direction='horizontal'>
-								<div>
-									<h1>Create a Retriever</h1>
-									<p>
-										Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Lorem ipsum
-										dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Lorem ipsum dolor.
-									</p>
-								</div>
-								<Space size='middle'>
-									<Link to={'/retriever'}>
-										<button className='custom-button'>Create Retriever</button>
-									</Link>
+						<div className="list-items-wrapper">
+							<div className='oracle-card-wrapper'>
+								<Space size='middle' direction='horizontal'>
+									<div>
+										<h1>Create a Retriever</h1>
+										<p>
+											Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Lorem ipsum
+											dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Lorem ipsum dolor.
+										</p>
+									</div>
+									<Space size='middle'>
+										<Link to={'/retriever'}>
+											<button className='custom-button'>Create Retriever</button>
+										</Link>
+									</Space>
 								</Space>
-							</Space>
+							</div>
+							<Retrievers />
 						</div>
 					</TabPane>
 				</Tabs>
