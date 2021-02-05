@@ -79,3 +79,16 @@ th {
 	transform: translate(-50%, -50%);
 	left: 50%;
 }
+
+.highlightjs-component {
+	.prettyprint {
+		height: 153px;
+		cursor: pointer;
+		transition: height 0.4s;
+		-webkit-transition: height 0.4s;
+
+		&:hover {
+			height: 100%;
+		}
+	}
+}
