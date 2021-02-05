@@ -25,8 +25,7 @@ const Config1 = ({ history }) => {
 						<p className='small'>STEP 1 OF 4</p>
 						<h1>Enter Oracle ID and node URL</h1>
 						<p>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Lorem ipsum dolor sit
-							amet. Consectetur adipiscing elit. Aenean euismod bibendum laoreet. Lorem ipsum dolor.
+							An oracle container can host multiple oracles simultaneously, so a unique identifier will be required for each spawned instance. This instance will also need to know which IOTA nodes to be connected to.
 						</p>
 					</Space>
 				</div>

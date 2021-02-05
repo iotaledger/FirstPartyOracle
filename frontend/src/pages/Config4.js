@@ -49,8 +49,7 @@ const Config4 = ({ history }) => {
 						<p className='small'>STEP 4 OF 4</p>
 						<h1>Launch Oracle</h1>
 						<p>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Lorem ipsum dolor sit
-							amet. Consectetur adipiscing elit. Aenean euismod bibendum laoreet. Lorem ipsum dolor.
+							Once an oracle has been launched, it will run until the container has been shut down. Please ensure that your settings are correct before continuing.
 						</p>
 						<div className='alert-wrapper'>
 							<Alert

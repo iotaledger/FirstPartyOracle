@@ -50,8 +50,7 @@ const ConfigRetriever = () => {
 						<p className='small'>STEP 1 OF 1</p>
 						<h1>Enter retriever details</h1>
 						<p>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Lorem ipsum dolor sit
-							amet. Consectetur adipiscing elit. Aenean euismod bibendum laoreet. Lorem ipsum dolor.
+							An oracle container can host multiple retrievers simultaneously, so a unique identifier will be required for each spawned instance. A retriever will keep track of it’s fetching state, so once data has been retrieved, it should be stored or used at that time. This instance will also need to know which IOTA nodes to be connected to.
 						</p>
 					</Space>
 				</div>

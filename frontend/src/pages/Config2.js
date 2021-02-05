@@ -27,8 +27,7 @@ const Config2 = ({ history }) => {
 						<p className='small'>STEP 2 OF 4</p>
 						<h1>Configure send options</h1>
 						<p>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Lorem ipsum dolor sit
-							amet. Consectetur adipiscing elit. Aenean euismod bibendum laoreet. Lorem ipsum dolor.
+							These options are necessary to inform the IOTA Streams client underlying an oracle how to communicate with an IOTA node. The depth refers to how deep the parent transactions will be in the tangle. The Minimum Weight Magnitude is used for proof of work calculations. The threads determine the number of client threads that can be used for asynchronous communication, and the local proof of work determines if Proof of Work will be conducted locally or on the node end.
 						</p>
 					</Space>
 				</div>

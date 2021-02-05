@@ -65,8 +65,7 @@ const Config3 = ({ history }) => {
 						<p className='small'>STEP 3 OF 4</p>
 						<h1>Add data source</h1>
 						<p>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Lorem ipsum dolor sit
-							amet. Consectetur adipiscing elit. Aenean euismod bibendum laoreet. Lorem ipsum dolor.
+							Here you can choose the options for input for your oracle. Raw data inputs refer to manually attached data. In order for data to be attached to an oracle, the device/party trying to attach must have their IP address whitelisted, for instance a sensor connecting to a gateway based oracle. The API Retriever details outline the request information to be made on a loop and attached automatically within the oracle. This option requires the entry of at a minimum: A URL Endpoint for the api data, and a ticker rate (in milliseconds) for the rate at which the call will be made. The oracle will automatically convert the data to an IOTA message that can be retrieved from the oracle instance.
 						</p>
 					</Space>
 				</div>
