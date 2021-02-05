@@ -26,7 +26,7 @@ const FetchResults = () => {
 
 		const fetchInterval = setInterval(async () => {
 			await fetchData();
-		}, 10000); // fetch every 10 seconds
+		}, 30000); // fetch every 30 seconds
 
 		// Removing the timeout before unmounting the component
 		return () => {
@@ -49,7 +49,6 @@ const FetchResults = () => {
 
 	const fetchData = async () => {
 		try {
-			console.log('Fetch');
 			const serverAPI = 'http://127.0.0.1:8080/fetch_from_oracle';
 			const { id, node, address } = existingRetriever;
 
@@ -63,13 +62,13 @@ const FetchResults = () => {
 				}
 			})
 				.then(res => res.json())
-				.then(messages => {
-					if (messages.length) {
-						const masked = messages?.[0]?.contents?.masked;
+				.then(content => {
+					if (content.length) {
+						const masked = content?.[0]?.contents?.masked;
 						const decoded = String.fromCharCode.apply(null, masked);
 						const message = { 
-							messageId: messages?.[0]?.tag, 
-							sender: messages?.[0]?.pk,
+							messageId: content?.[0]?.tag, 
+							sender: content?.[0]?.pk,
 							content: JSON.parse(decoded)
 						};
 				  
@@ -88,8 +87,6 @@ const FetchResults = () => {
 			console.error(error);
 		}
 	}
-
-	console.log('messages', messages);
 
 	return (
 		<Layout>
@@ -120,7 +117,7 @@ const FetchResults = () => {
 						<Col span={8}>
 							<Card className='info-card'>
 								<Space size={2} direction='vertical'>
-									<p>Endpoint</p>
+									<p>Address</p>
 									<b className='cut-text'>{retriever.address}</b>
 								</Space>
 							</Card>
