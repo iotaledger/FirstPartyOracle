@@ -15,6 +15,7 @@ const App = () => {
 					<Route exact path={'/oracle/2'} component={Config2} />
 					<Route exact path={'/oracle/3'} component={Config3} />
 					<Route exact path={'/oracle/4'} component={Config4} />
+					<Route path={'/retriever'} component={ConfigRetriever} />
 					<Route path={'/retriever/:retrieverId'} component={ConfigRetriever} />
 					<Route exact path={'/fetch/:retrieverId'} component={FetchResults} />
 					<Route render={() => <Config />} />
