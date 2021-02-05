@@ -63,7 +63,7 @@ const Config4 = ({ history }) => {
 				<Divider />
 				<div className='btns-wrapper'>
 					<Space size='middle'>
-						<button onClick={() => history.goBack()} className='custom-button-2'>
+						<button onClick={() => history.push('/oracle/3')} className='custom-button-2'>
 							Back
 						</button>
 						<button className='custom-button' onClick={() => spawnOracle()}>

@@ -75,7 +75,7 @@ const Config1 = ({ history }) => {
 					<Divider />
 					<div className='btns-wrapper'>
 						<Space size='middle'>
-							<button onClick={() => history.goBack()} className='custom-button-2'>
+							<button onClick={() => history.push('/oracle')} className='custom-button-2'>
 								Back
 							</button>
 							<button className='custom-button' type='submit'>

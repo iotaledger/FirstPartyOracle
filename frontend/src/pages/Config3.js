@@ -54,7 +54,7 @@ const Config3 = ({ history }) => {
 		if (e.key === 'Enter') {
 			e.preventDefault();
 		}
-		history.goBack();
+		history.push('/oracle/2');
 	};
 
 	return (
