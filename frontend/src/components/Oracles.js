@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Menu, Dropdown } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { EllipsisOutlined } from '@ant-design/icons';
@@ -10,6 +10,7 @@ import deleteOracle from '../assets/delete.svg';
 const Oracles = () => {
 	let history = useHistory();
 	const { oracles, retrievers, updateItems } = useContext(AppContext);
+	const [oraclesList, setOraclesList] = useState(oracles);
 
 	const assign = async oracle => {
 		await updateItems('retrievers', [ ...retrievers, oracle ]);
@@ -20,6 +21,7 @@ const Oracles = () => {
 			} 
 		});
 		await updateItems('oracles', updatedList);
+		setOraclesList(updatedList);
 	}
 
 	const handleMenuClick = (event, oracle) => {
@@ -70,7 +72,7 @@ const Oracles = () => {
 	return (
 		<React.Fragment>
 		{
-			oracles.length > 0 ? (
+			oracles.length > 0 || oraclesList > 0 ? (
 				<div className='oracle-items-wrapper'>
 					{
 						oracles.map(oracle => (
