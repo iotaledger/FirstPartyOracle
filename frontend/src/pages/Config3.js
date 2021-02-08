@@ -66,11 +66,14 @@ const Config3 = ({ history }) => {
 						<h1>Add data source</h1>
 						<p>
 							Hardware Sources produce data directly (e.g. a sensor). 
+							<br />
 							Please add the IP address of the device to allow it to add data to your Oracle directly.
 							<br /><br />
-							API Sources allow you to pull data directly from a data-providing API. 
-							Please provide the URL for the API endpoint you want to pull data from, and the rate at which to pull the data 
-							(ticker rate in milliseconds).  
+							API Sources allow you to pull data directly from a data-providing API.
+							<br />
+							Please provide the URL for the API endpoint you want to pull data from, 
+							<br />
+							and the rate at which to pull the data (ticker rate in milliseconds).  
 						</p>
 					</Space>
 				</div>
