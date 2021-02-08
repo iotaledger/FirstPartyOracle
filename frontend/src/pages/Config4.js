@@ -49,9 +49,9 @@ const Config4 = ({ history }) => {
 						<p className='small'>STEP 4 OF 4</p>
 						<h1>Launch Oracle</h1>
 						<p>
-							Once an Oracle has been launched, it will run until the container has been shut down.
+							Once an Oracle has been launched, it will run with other Oracles in a special container, until that container has been shut down.
 							<br />
-							Please ensure that your settings are correct before continuing.
+							Please ensure that you have configured the Oracle properly before launching it.
 						</p>
 						<div className='alert-wrapper'>
 							<Alert

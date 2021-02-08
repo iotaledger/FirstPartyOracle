@@ -55,6 +55,8 @@ const ConfigRetriever = () => {
 							Please also specify the IOTA node to which the retriever should connect. 
 							<br />
 							This can be the same as the node used previously.
+							<br />
+							Finally please enter the address (aka channel ID) of the Oracle you want to retrieve data from.
 						</p>
 					</Space>
 				</div>
