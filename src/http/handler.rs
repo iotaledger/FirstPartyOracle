@@ -43,6 +43,7 @@ pub async fn spawn_oracle_on_start(
             }
 
             let message = format!("New Client started\npk: {}, \naddr: {}", pk, addr.to_string());
+            println!("{}",message);
             Ok(message)
         },
         Err(e) => {
@@ -78,6 +79,7 @@ pub async fn spawn_oracle(
                     }
 
                     let message = format!("pk: {}, addr: {}", pk, addr.to_string());
+                    println!("{}",message);
                     response = respond(StatusCode::OK, message)?
 
                 },
