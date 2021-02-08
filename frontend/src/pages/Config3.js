@@ -86,14 +86,14 @@ const Config3 = ({ history }) => {
 					hideRequiredMark
 					initialValues={{ headers: [''], whitelist: [''] }}>
 					<Tabs tabBarGutter={50} centered defaultActiveKey='1'>
-						<TabPane tab='Raw data' key='1'>
+						<TabPane tab='Hardware Sources' key='1'>
 							<div className='tab-container'>
 								<div className='input-wrapper'>
 									<Form.List name='whitelist'>
 										{(fields, { add, remove }, { errors }) => (
 											<div>
 												{fields.map((field, index) => (
-													<Form.Item label={index === 0 ? 'Whitelisted IP' : ''} required={false} key={field.key}>
+													<Form.Item label={index === 0 ? 'Hardware IP Address' : ''} required={false} key={field.key}>
 														<div className='input-wrapper-dynamic'>
 															<Form.Item {...field} validateTrigger={['onChange', 'onBlur']} noStyle>
 																<Input placeholder='IP address' className='rounded-input' />
@@ -116,7 +116,7 @@ const Config3 = ({ history }) => {
 								</div>
 							</div>
 						</TabPane>
-						<TabPane tab='API Retriever' key='2'>
+						<TabPane tab='API Sources' key='2'>
 							<div className='tab-container'>
 								<div className='input-wrapper-md'>
 									<Row justify='space-between' align='middle' gutter={30}>
