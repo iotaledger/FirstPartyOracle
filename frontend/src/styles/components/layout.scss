@@ -1,0 +1,22 @@
+.header {
+	width: 100%;
+	height: 80px;
+	padding: 0 240px;
+	background: white;
+	display: flex;
+	align-items: center;
+}
+
+.iota-logo {
+	width: 120px;
+}
+
+.footer-wrapper {
+	display: flex;
+	justify-content: center;
+	background-color: white;
+	bottom: 0;
+	height: 80px;
+	padding: 20px;
+	margin-top: 35px;
+}

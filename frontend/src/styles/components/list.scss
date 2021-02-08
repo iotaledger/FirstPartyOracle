@@ -1,0 +1,87 @@
+.list-items-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background: $base-color-2;
+	padding: 40px 50px;
+	margin: 15px 0;
+	border: 1px solid #e4ebfa;
+	box-shadow: 0px 1px 4px rgba(37, 57, 95, 0.1);
+	border-radius: 16px;
+
+    .oracle-items-wrapper {
+        margin-top: 70px;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .oracle-item-wrapper {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        background: $base-color;
+        border-radius: 10px;
+        padding: 35px 30px 25px;
+        margin: 15px 0;
+        height: 112px;
+        
+        .oracle-title {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            h1, p {
+                margin-bottom: 0;
+            }
+        }
+
+        .oracle-actions {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            button {
+                margin-left: 20px;
+            }
+
+            .ellipsis-icon {
+                font-size: 30px;
+                color: $base-color-text-2;
+                cursor: pointer;
+                padding: 0 5px;
+
+                &:hover {
+                    background: #E4EBFA;
+                    border-radius: 6px;
+                }
+            }
+        }
+    }
+
+}
+
+.ant-dropdown {
+	.ant-dropdown-menu {
+        border: 1px solid #E4EBFA;
+        box-shadow: 0px 1px 2px 2px rgba(154, 173, 206, 0.1);
+        border-radius: 8px;
+
+		.ant-dropdown-menu-item {
+            width: 180px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding: 10px 10px 10px 15px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500;
+            font-size: 12px;
+            line-height: 140%;
+            color: $base-color-text;
+
+            img {
+                margin-right: 10px;
+            }
+		}
+	}
+}

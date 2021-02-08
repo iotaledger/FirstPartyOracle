@@ -1,0 +1,34 @@
+h1,
+h2,
+h3,
+h4,
+h5 {
+	color: $base-color-text;
+	font-weight: 600;
+}
+
+p {
+	font-family: 'DM Sans', sans-serif;
+	font-style: normal;
+	font-size: 14px;
+	line-height: 18px;
+	font-weight: 400;
+	color: $base-color-text-2;
+}
+
+.cut-text {
+	text-overflow: clip;
+	overflow: scroll;
+	width: 190px;
+	font-size: 15px;
+	white-space: nowrap;
+	display: inline-block;
+	justify-content: center;
+	font-weight: 600;
+}
+
+.wrap {
+	overflow-wrap: break-word;
+	word-wrap: break-word;
+	margin-top: 25px;
+}
