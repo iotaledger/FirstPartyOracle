@@ -1,14 +1,16 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import fetch from 'node-fetch';
 import { Space, Divider, Alert } from 'antd';
 import { AppContext } from '../context/globalState';
-import { Layout } from '../components';
+import { Layout, Loading } from '../components';
 
 const Config4 = ({ history }) => {
 	const { currentConfig, oracles, updateItems } = useContext(AppContext);
+	const [loading, setLoading] = useState(false);
 	const serverAPI = 'http://127.0.0.1:8080/spawn_oracle';
 
 	const spawnOracle = async () => {
+		setLoading(true);
 		fetch(serverAPI, {
 			method: 'POST',
 			body: JSON.stringify(currentConfig),
@@ -37,7 +39,8 @@ const Config4 = ({ history }) => {
 		})
 		.catch(error => {
 			console.log(error);
-			history.push('/');
+			setLoading(false);
+			// history.push('/');
 		});
 	};
 
@@ -64,14 +67,18 @@ const Config4 = ({ history }) => {
 				</div>
 				<Divider />
 				<div className='btns-wrapper'>
-					<Space size='middle'>
-						<button onClick={() => history.push('/oracle/3')} className='custom-button-2'>
-							Back
-						</button>
-						<button className='custom-button' onClick={() => spawnOracle()}>
-							Launch Oracle
-						</button>
-					</Space>
+					{loading ? (
+						<Loading />
+					) : (
+						<Space size='middle'>
+							<button onClick={() => history.push('/oracle/3')} className='custom-button-2'>
+								Back
+							</button>
+							<button className='custom-button' onClick={() => spawnOracle()}>
+								Launch Oracle
+							</button>
+						</Space>
+					)}
 				</div>
 			</div>
 		</Layout>
