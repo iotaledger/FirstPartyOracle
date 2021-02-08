@@ -53,6 +53,7 @@ const ConfigRetriever = () => {
 							Multiple retrievers can be used simultaneously. Please provide a unique identifier for this instance. 
 							<br />
 							Please also specify the IOTA node to which the retriever should connect. 
+							<br />
 							This can be the same as the node used previously.
 						</p>
 					</Space>
