@@ -49,11 +49,13 @@ const Config4 = ({ history }) => {
 						<p className='small'>STEP 4 OF 4</p>
 						<h1>Launch Oracle</h1>
 						<p>
-							Once an oracle has been launched, it will run until the container has been shut down. Please ensure that your settings are correct before continuing.
+							Once an Oracle has been launched, it will run until the container has been shut down.
+							<br />
+							Please ensure that your settings are correct before continuing.
 						</p>
 						<div className='alert-wrapper'>
 							<Alert
-								message='Please disable Content Blocker plugins for this site in order to make requests to localhost'
+								message='Please disable any Content Blocking plugins on your browser. Otherwise this demo will not work.'
 								type='info'
 								showIcon
 							/>

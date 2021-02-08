@@ -30,7 +30,8 @@ const Config = () => {
 									<div>
 										<h1>Create an Oracle</h1>
 										<p>
-											Welcome to the IOTA Oracle Configuration Interface. This process will step you through setting up an IOTA Oracle to publish data onto the IOTA Tangle. Proceed here to set up your oracle, either on a hardware device or by referencing an API.
+											Welcome to IOTA Oracles. You will be guided through setting up 
+											an IOTA Oracle and publishing data to the Tangle.
 										</p>
 									</div>
 									<Space size='middle'>
@@ -50,12 +51,9 @@ const Config = () => {
 									<div>
 										<h1>Create a Retriever</h1>
 										<p>
-											Welcome to the IOTA Retriever Configuration Interface. 
-											This process will use an IOTA Oracle Retriever to pull data from a public IOTA Oracle, 
-											and verify the data has been published to the IOTA Tangle. 
-											If you intend to use this data in an existing application, 
-											please refer to the documentation located 
-											<a href='https://github.com/iotaledger/FirstPersonOracle' target='_blank' rel='noopener noreferrer'> here</a>
+											You will use a Retriever to obtain and verify data from a public IOTA Oracle. 
+											Note: If you want to use this data in an existing application, refer to the 
+											<a href='https://github.com/iotaledger/FirstPersonOracle' target='_blank' rel='noopener noreferrer'> documentation</a>
 										</p>
 									</div>
 									<Space size='middle'>
