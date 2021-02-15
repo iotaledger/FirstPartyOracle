@@ -3,8 +3,6 @@ import { Menu, Dropdown } from 'antd';
 import { useHistory } from 'react-router-dom';
 import { EllipsisOutlined } from '@ant-design/icons';
 import { AppContext } from '../context/globalState';
-import view from '../assets/view.svg';
-import configure from '../assets/configure.svg';
 import deleteOracle from '../assets/delete.svg';
 
 const Oracles = () => {
@@ -22,16 +20,11 @@ const Oracles = () => {
 		});
 		await updateItems('oracles', updatedList);
 		setOraclesList(updatedList);
+		history.push(`/retriever/${oracle.retriever}`, oracle);
 	}
 
 	const handleMenuClick = (event, oracle) => {
 		switch (event.key) {
-			case 'view':
-				history.push(`/fetch/${oracle.retriever}`, oracle);
-				break;
-			case 'configure':
-				history.push(`/retriever/${oracle.retriever}`, oracle);
-				break;
 			case 'delete':
 				const list = oracles.filter(item => item.id !== oracle.id);
 				updateItems('oracles', list.length > 0 ? list : []);
@@ -43,25 +36,6 @@ const Oracles = () => {
 
 	const menu = oracle => (
 		<Menu className='oracle-menu' onClick={event => handleMenuClick(event, oracle)}>
-			{
-				oracle.retriever ? (
-					<Menu.Item key='view'>
-						<img src={view} alt='' />
-						View retriever
-					</Menu.Item>
-				) : null
-			}
-			{
-				oracle.retriever ? (
-					<Menu.Item key='configure'>
-						<img src={configure} alt='' />
-						Configure
-					</Menu.Item>
-				) : null
-			}
-			{
-				oracle.retriever ? <Menu.Divider /> : null
-			}
 			<Menu.Item key='delete'>
 				<img src={deleteOracle} alt='' />
 				Delete Oracle
@@ -87,13 +61,15 @@ const Oracles = () => {
 											<EllipsisOutlined className='ellipsis-icon' />
 										</Dropdown>
 									</div>
-									{
-										oracle.retriever ? null : (
-											<button onClick={() => assign(oracle)} className='custom-button-2'>
-												Assign a retriever
-											</button>
-										)
-									}
+									{oracle.retriever ? (
+									<button onClick={() => history.push(`/fetch/${oracle.retriever}`, oracle)} className='custom-button-2'>
+										View retriever feed
+									</button>
+								) : (
+									<button onClick={() => assign(oracle)} className='custom-button'>
+										Assign a retriever
+									</button>
+								)}
 								</div>
 							</div>
 						))
