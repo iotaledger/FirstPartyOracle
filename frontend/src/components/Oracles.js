@@ -20,7 +20,7 @@ const Oracles = () => {
 		});
 		await updateItems('oracles', updatedList);
 		setOraclesList(updatedList);
-		oracle.retriever && history.push(`/retriever/${oracle.retriever}`, oracle);
+		history.push(`/retriever/${oracle.retriever}`, oracle);
 	}
 
 	const handleMenuClick = (event, oracle) => {
